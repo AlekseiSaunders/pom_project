@@ -1,8 +1,20 @@
+import os
+import pytest
+from dotenv import load_dotenv
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from page_objects.login_page import LoginPage
+
+
+load_dotenv()
+admin_user = os.getenv("USERNAME")
+admin_pass = os.getenv("USERPASSWORD")
 
 
 
-class LoginTests:
+class TestLogin:
     
     def test_valid_login(self):
         driver = webdriver.Firefox()
@@ -10,6 +22,19 @@ class LoginTests:
         driver.implicitly_wait(3)
         driver.get("https://www.letskodeit.com/")
     
-
+        lp = LoginPage(driver)
+        lp.login(admin_user, admin_pass)
         
         
+        page_title = driver.find_element(By.XPATH, "//title")
+        title_name = page_title.get_attribute('innerHTML')
+        expected_title = 'My Courses'
+        print(title_name)
+        if title_name == expected_title:
+            print("Login Successful")
+        else:
+            print("Login Failed")
+        
+        
+TL = TestLogin()
+TL.test_valid_login()
