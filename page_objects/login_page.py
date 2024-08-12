@@ -76,10 +76,10 @@ class LoginPage:
         try:
             for locator in [self._login_button, self._username_input, self._password_input]:
                 self.wait.until(EC.presence_of_element_located((By.XPATH, locator)))
-                print(f"{locator} was located succesfully")
+                logger.info(f"{locator} was located succesfully")
             return True
         except NoSuchElementException:
-            print(f"Could not find {locator}")
+            logger.error(f"Could not find {locator}")
             return False
         
     def login(self, username, password):
@@ -101,6 +101,7 @@ class LoginPage:
         
         try:
             self.wait.until(EC.presence_of_element_located((By.XPATH, self._dropdown_menu)))
+            logger.info(f"Login successful, user account dropdown found")
         except TimeoutException:
             raise TimeoutException("Login failed or took too long to complete.")
         

@@ -30,9 +30,10 @@ class TestLogin:
         
         try:
             self.wait.until(EC.title_is('My Courses'))
-            print("Login Successful")
-        except:
-            print("Login Failed")
+            logger.info("Login Successful")
+        except Exception as e:
+            logger.warning("Login Failed")
+            logger.error(f"Error: {str(e)}")
             
     def test_all_elements(self):
         self.driver = setup_webdriver('chrome')

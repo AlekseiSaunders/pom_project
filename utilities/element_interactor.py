@@ -39,7 +39,7 @@ class ElementInteractor:
             actions.move_to_element(element).perform()
 
             WebDriverWait(driver, timeout).until(EC.visibility_of(element))
-            logger.info(f"Scrolled to element and it's visible")
+            logger.info(f"Scrolled to {element} and it's visible")
             return element
         except TimeoutException:
             logger.error(f"Element not visible after scrolling within {timeout} seconds")
@@ -54,10 +54,13 @@ class ElementInteractor:
             file_input (WebElement): The file input element.
             file_path (str): Path to the file to be uploaded.
         """
-        abs_file_path = os.path.abspath(file_path)
-        file_input.send_keys(abs_file_path)
-        logger.info(f"File uploaded: {abs_file_path}")
-
+        try:
+            abs_file_path = os.path.abspath(file_path)
+            file_input.send_keys(abs_file_path)
+            logger.info(f"File uploaded: {abs_file_path}")
+        except Exception as e:
+            logger.warning(f"Could upload {file_input} found at {file_path}")
+            logger.error(f"Error: {str(e)}")
 
     def element_click(self, locator, locator_type="XPATH"):
         """
@@ -70,9 +73,10 @@ class ElementInteractor:
         try:
             element = self.locator.get_element(self.driver, locator, locator_type)
             element.click()
+            logger.info(f"Element clicked successfully: {element.text}")
         except Exception as e:
-            print(f"Could not click {locator} with {locator_type}")
-            print(f"Error: {str(e)}")
+            logger.warning(f"Could not click {locator} with {locator_type}")
+            logger.error(f"Error: {str(e)}")
             
     def element_send_input(self, data, locator, locator_type="XPATH"):
         """
@@ -86,6 +90,6 @@ class ElementInteractor:
             element = self.locator.get_element(self.driver, locator, locator_type)
             element.send_keys(data)
         except Exception as e:
-            print(f"Could send data into {locator}.")
-            print(f"Error: {str(e)}")
+            logger.warning(f"Could send data into {locator}.")
+            logger.error(f"Error: {str(e)}")
             
