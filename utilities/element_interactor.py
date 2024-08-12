@@ -63,11 +63,11 @@ class ElementInteractor:
             logger.error(f"Error: {str(e)}")
 
     def element_click(self, locator, locator_type="XPATH"):
-        """
-        Click on an element
+        """_summary_
 
         Args:
             locator (_type_): _description_
+            locator_type (str, optional): _description_. Defaults to "XPATH".
         """
         
         try:
