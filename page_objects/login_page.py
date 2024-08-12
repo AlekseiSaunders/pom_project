@@ -37,6 +37,7 @@ class LoginPage:
     _password_input = "//form[contains(@method, 'POST')]//input[@type='password']"
     _login_button = "//form[contains(@method, 'POST')]//button[@id='login']"
     _dropdown_menu = "//button[@id='dropdownMenu1']"
+    _incorrect_details = "//form[@method='POST']//span[@id='incorrectdetails']"
         
     
     def click_login_link(self):
@@ -53,6 +54,14 @@ class LoginPage:
         """
         logger.info("Entering user: {user}.")
         self.interact.element_send_input(user, self._username_input)
+        
+    def clear_username(self):
+        logger.info("Clearing the username field")
+        self.locator.get_element(self._username_input).clear()
+        
+    def clear_password(self):
+        logger.info("Clearing the password field")
+        self.locator.get_element(self._password_input).clear()
         
     def enter_password(self, password):
         """
@@ -89,16 +98,38 @@ class LoginPage:
             logger.error(f"Could not find {locator}")
             return False
         
-    def login(self, user, password):
+    def verify_login_successful(self):
+        """_summary_
+
+        Raises:
+            TimeoutException: _description_
+
+        Returns:
+            _type_: _description_
         """
-        Performs the login action.
+        try:
+            self.wait.until(EC.presence_of_element_located((By.XPATH, self._dropdown_menu)))
+            logger.info(f"Login successful, user account dropdown found")
+            return True
+        except TimeoutException:
+            logger.error("Login failed or took too long to complete.")
+            raise TimeoutException("Login failed or took too long to complete.")
+        
+    def verify_login_failed(self):
+        try:
+            self.wait.until(EC.presence_of_element_located((By.XPATH, self._incorrect_details)))
+            logger.info(f"Login was not successful, warning was found")
+            return True
+        except TimeoutException:
+            logger.error("Login succeeded or warning was not found.")
+            raise TimeoutException("Login succeeded or warning was not found.")
+        
+    def login(self, user="", password=""):
+        """_summary_
 
         Args:
-            username (str): The username to log in with
-            password (str): The password to log in with
-            
-        Raises:
-            TimeoutException: If the login process take to long or fails.
+            user (str, optional): _description_. Defaults to "".
+            password (str, optional): _description_. Defaults to "".
         """
         logger.info(f"Attempting login for user: {user}")
         self.click_login_link()
@@ -106,11 +137,5 @@ class LoginPage:
         self.enter_password(password)
         self.click_login_button()
         
-        try:
-            self.wait.until(EC.presence_of_element_located((By.XPATH, self._dropdown_menu)))
-            logger.info(f"Login successful, user account dropdown found")
-        except TimeoutException:
-            logger.error("Login failed or took too long to complete.")
-            raise TimeoutException("Login failed or took too long to complete.")
         
     
