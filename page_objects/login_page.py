@@ -1,4 +1,5 @@
 import os
+from utilities.utils import logger
 from dotenv import load_dotenv
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
