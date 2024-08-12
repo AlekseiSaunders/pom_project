@@ -20,12 +20,14 @@ admin_pass = os.getenv("ADMIN_PASSWORD")
 class TestLogin:
     
     def test_valid_login(self):
+        logger.info("Initializing driver and maximizing window.")
         self.driver = setup_webdriver('chrome')
         self.driver.maximize_window()
         self.wait = WebDriverWait(self.driver, DEFAULT_TIMEOUT)
         self.driver.get("https://www.letskodeit.com/")
     
         lp = LoginPage(self.driver)
+        logger.info("Attempting to login")
         lp.login(admin_user, admin_pass)
         
         try:
@@ -36,6 +38,7 @@ class TestLogin:
             logger.error(f"Error: {str(e)}")
             
     def test_all_elements(self):
+        logger.info("Initializing driver and maximizing window.")
         self.driver = setup_webdriver('chrome')
         self.driver.maximize_window()
         self.wait = WebDriverWait(self.driver, DEFAULT_TIMEOUT)
