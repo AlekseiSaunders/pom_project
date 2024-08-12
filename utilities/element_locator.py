@@ -69,7 +69,7 @@ class ElementLocator:
             return None
 
     @staticmethod
-    def is_element_present(driver: WebDriver, locator: str, by_type: str = By.XPATH) -> bool:
+    def is_element_present(driver: WebDriver, locator: str, by_type: str = "xpath") -> bool:
         """
         Check if an element is present on the page.
 
