@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from utilities.element_locator import ElementLocator
+from utilities.element_interactor import ElementInteractor
 from utilities.config import DEFAULT_TIMEOUT
 
 
@@ -25,7 +26,8 @@ class LoginPage:
         """
         self.driver = driver
         self.wait = WebDriverWait(self.driver, DEFAULT_TIMEOUT)
-        self.locator = ElementLocator()
+        self.locator = ElementLocator(driver)
+        self.interact = ElementInteractor(driver)
         
     # Locators
     _login_link = "//div[contains(@class, 'navbar')]//a[@href='/login']"
@@ -33,26 +35,11 @@ class LoginPage:
     _password_input = "//form[contains(@method, 'POST')]//input[@type='password']"
     _login_button = "//form[contains(@method, 'POST')]//button[@id='login']"
     _dropdown_menu = "//button[@id='dropdownMenu1']"
-    
-    def get_login_link(self):
-        """Get the login link element."""
-        return self.locator.get_element(self.driver, self._login_link)
-    
-    def get_username_input(self):
-        """Get the username input element."""
-        return self.locator.get_element(self.driver, self._username_input)
-    
-    def get_password_input(self):
-        """Get the password input element."""
-        return self.locator.get_element(self.driver, self._password_input)
-    
-    def get_login_button(self):
-        """Get the login button element."""
-        return self.locator.get_element(self.driver, self._login_button)
+        
     
     def click_login_link(self):
         """Click the login link."""
-        self.get_login_link().click()
+        self.interact.element_click(self._login_link)
         
     def enter_username(self, username):
         """
@@ -61,7 +48,7 @@ class LoginPage:
         Args:
             username (str): The username for the test account.
         """
-        self.get_username_input().send_keys(username)
+        self.interact.element_send_input(username, self._username_input)
         
     def enter_password(self, password):
         """
@@ -70,11 +57,11 @@ class LoginPage:
         Args:
             password (str): The password for the associated username.
         """
-        self.get_password_input().send_keys(password)
+        self.interact.element_send_input(password, self._password_input)
         
     def click_login_button(self):
         """Click the login button"""
-        self.get_login_button().click()
+        self.interact.element_click(self._login_button)
         
     def verify_all_elements_present(self):
         """
@@ -83,12 +70,15 @@ class LoginPage:
         Returns: 
             bool: True is all elements are present, False otherwise
         """
+        self.click_login_link()
+        
         try:
-            self.get_username_input
-            self.get_password_input
-            self.get_login_button
+            for locator in [self._login_button, self._username_input, self._password_input]:
+                self.wait.until(EC.presence_of_element_located((By.XPATH, locator)))
+                print(f"{locator} was located succesfully")
             return True
         except NoSuchElementException:
+            print(f"Could not find {locator}")
             return False
         
     def login(self, username, password):
