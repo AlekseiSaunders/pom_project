@@ -15,6 +15,9 @@ from datetime import datetime
 
 class ElementLocator:
     """A class for locating web elements."""
+    
+    def __init__(self, driver):
+        self.driver = driver
 
     @staticmethod
     def get_by_type(locator_type: str) -> Optional[str]:
