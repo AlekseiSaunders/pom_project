@@ -40,16 +40,18 @@ class LoginPage:
     
     def click_login_link(self):
         """Click the login link."""
+        logger.info("Clicking login link.")
         self.interact.element_click(self._login_link)
         
-    def enter_username(self, username):
+    def enter_username(self, user):
         """
         Enter the username into the username input field.
 
         Args:
             username (str): The username for the test account.
         """
-        self.interact.element_send_input(username, self._username_input)
+        logger.info("Entering user: {user}.")
+        self.interact.element_send_input(user, self._username_input)
         
     def enter_password(self, password):
         """
@@ -58,10 +60,12 @@ class LoginPage:
         Args:
             password (str): The password for the associated username.
         """
+        logging.info("Entering password.")
         self.interact.element_send_input(password, self._password_input)
         
     def click_login_button(self):
         """Click the login button"""
+        logger.info("Clicking the login button.")
         self.interact.element_click(self._login_button)
         
     def verify_all_elements_present(self):
@@ -71,18 +75,20 @@ class LoginPage:
         Returns: 
             bool: True is all elements are present, False otherwise
         """
+        logger.info("Attempting to click login link")
         self.click_login_link()
         
+        logger.info("Verifying all expected elements are present.")
         try:
             for locator in [self._login_button, self._username_input, self._password_input]:
                 self.wait.until(EC.presence_of_element_located((By.XPATH, locator)))
-                logger.info(f"{locator} was located succesfully")
+                logger.info(f"{locator} was located succesfully.")
             return True
         except NoSuchElementException:
             logger.error(f"Could not find {locator}")
             return False
         
-    def login(self, username, password):
+    def login(self, user, password):
         """
         Performs the login action.
 
@@ -93,9 +99,9 @@ class LoginPage:
         Raises:
             TimeoutException: If the login process take to long or fails.
         """
-        
+        logger.info(f"Attempting login for user: {user}")
         self.click_login_link()
-        self.enter_username(username)
+        self.enter_username(user)
         self.enter_password(password)
         self.click_login_button()
         
@@ -103,6 +109,7 @@ class LoginPage:
             self.wait.until(EC.presence_of_element_located((By.XPATH, self._dropdown_menu)))
             logger.info(f"Login successful, user account dropdown found")
         except TimeoutException:
+            logger.error("Login failed or took too long to complete.")
             raise TimeoutException("Login failed or took too long to complete.")
         
     
