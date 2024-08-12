@@ -27,7 +27,7 @@ class TestLogin:
         self.driver.get("https://www.letskodeit.com/")
     
         lp = LoginPage(self.driver)
-        logger.info("Attempting to login")
+        logger.info("Attempting to login from test")
         lp.login(admin_user, admin_pass)
         
         try:
