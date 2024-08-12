@@ -6,6 +6,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from page_objects.login_page import LoginPage
+from utilities.webdriver_setup import setup_webdriver
+from utilities.config import DEFAULT_TIMEOUT, EXTENDED_TIMEOUT
 
 
 load_dotenv()
@@ -17,9 +19,9 @@ admin_pass = os.getenv("USERPASSWORD")
 class TestLogin:
     
     def test_valid_login(self):
-        driver = webdriver.Firefox()
+        driver = setup_webdriver('chrome')
         driver.maximize_window()
-        driver.implicitly_wait(3)
+        driver.implicitly_wait(DEFAULT_TIMEOUT)
         driver.get("https://www.letskodeit.com/")
     
         lp = LoginPage(driver)
