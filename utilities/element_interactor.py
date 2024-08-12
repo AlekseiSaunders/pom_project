@@ -1,6 +1,8 @@
 import os
 from .utils import logger
+from traceback import print_stack
 from typing import Optional, List
+from utilities.element_locator import ElementLocator
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.by import By
@@ -11,8 +13,13 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from datetime import datetime
 
 
+
 class ElementInteractor:
     """A class for interacting with web elements."""
+    
+    def __init__(self, driver):
+        self.driver = driver
+        self.locator = ElementLocator(driver)
 
     @staticmethod
     def scroll_to_element(driver: WebDriver, element: WebElement, timeout: int = 10) -> Optional[WebElement]:
@@ -50,3 +57,35 @@ class ElementInteractor:
         abs_file_path = os.path.abspath(file_path)
         file_input.send_keys(abs_file_path)
         logger.info(f"File uploaded: {abs_file_path}")
+
+
+    def element_click(self, locator, locator_type="XPATH"):
+        """
+        Click on an element
+
+        Args:
+            locator (_type_): _description_
+        """
+        
+        try:
+            element = self.locator.get_element(self.driver, locator, locator_type)
+            element.click()
+        except Exception as e:
+            print(f"Could not click {locator} with {locator_type}")
+            print(f"Error: {str(e)}")
+            
+    def element_send_input(self, data, locator, locator_type="XPATH"):
+        """
+        Sends text to an element
+
+        Args:
+            locator (str): The locator, element, variable
+            locator_type (str, optional): The method to find the element. Defaults to "XPATH".
+        """
+        try:
+            element = self.locator.get_element(self.driver, locator, locator_type)
+            element.send_keys(data)
+        except Exception as e:
+            print(f"Could send data into {locator}.")
+            print(f"Error: {str(e)}")
+            
