@@ -69,7 +69,7 @@ class ElementLocator:
             return None
 
     @staticmethod
-    def is_element_present(driver: WebDriver, locator: str, by_type: str = "xpath") -> bool:
+    def is_element_present(driver: WebDriver, locator: str, locator_type: str = "xpath") -> bool:
         """
         Check if an element is present on the page.
 
@@ -82,7 +82,7 @@ class ElementLocator:
             bool: True if the element is present, False otherwise.
         """
         try:
-            driver.find_element(by_type, locator)
+            driver.find_element(locator_type, locator)
             logger.info(f"Element found with locator: {locator}")
             return True
         except NoSuchElementException:
@@ -90,7 +90,7 @@ class ElementLocator:
             return False
 
     @staticmethod
-    def are_elements_present(driver: WebDriver, locator: str, by_type: str = By.XPATH) -> bool:
+    def are_elements_present(driver: WebDriver, locator: str, locator_type: str = "xpath") -> bool:
         """
         Check if one or more elements are present on the page.
 
@@ -102,7 +102,7 @@ class ElementLocator:
         Returns:
             bool: True if one or more elements are present, False otherwise.
         """
-        elements = driver.find_elements(by_type, locator)
+        elements = driver.find_elements(locator_type, locator)
         if elements:
             logger.info(f"{len(elements)} element(s) found with locator: {locator}")
             return True
