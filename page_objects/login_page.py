@@ -1,4 +1,5 @@
 import os
+import time
 from utilities.utils import logger
 from dotenv import load_dotenv
 from selenium.webdriver.common.by import By
@@ -40,7 +41,7 @@ class LoginPage:
     
     def click_login_link(self):
         """Click the login link."""
-        logger.info("Clicking login link.")
+        logger.info("Clicking login link from click_method.")
         self.interact.element_click(self._login_link)
         
     def enter_username(self, user):
@@ -60,7 +61,7 @@ class LoginPage:
         Args:
             password (str): The password for the associated username.
         """
-        logging.info("Entering password.")
+        logger.info("Entering password.")
         self.interact.element_send_input(password, self._password_input)
         
     def click_login_button(self):
@@ -75,7 +76,7 @@ class LoginPage:
         Returns: 
             bool: True is all elements are present, False otherwise
         """
-        logger.info("Attempting to click login link")
+        logger.info("Attempting to click login link from verify_method")
         self.click_login_link()
         
         logger.info("Verifying all expected elements are present.")
