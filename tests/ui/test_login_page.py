@@ -11,32 +11,39 @@ from utilities.config import DEFAULT_TIMEOUT, EXTENDED_TIMEOUT
 
 
 load_dotenv()
-admin_user = os.getenv("USERNAME")
-admin_pass = os.getenv("USERPASSWORD")
+admin_user = os.getenv("ADMIN_USERNAME")
+admin_pass = os.getenv("ADMIN_PASSWORD")
 
 
 
 class TestLogin:
     
     def test_valid_login(self):
-        driver = setup_webdriver('chrome')
-        driver.maximize_window()
-        driver.implicitly_wait(DEFAULT_TIMEOUT)
-        driver.get("https://www.letskodeit.com/")
+        self.driver = setup_webdriver('chrome')
+        self.driver.maximize_window()
+        self.wait = WebDriverWait(self.driver, DEFAULT_TIMEOUT)
+        self.driver.get("https://www.letskodeit.com/")
     
-        lp = LoginPage(driver)
+        lp = LoginPage(self.driver)
         lp.login(admin_user, admin_pass)
         
-        
-        page_title = driver.find_element(By.XPATH, "//title")
-        title_name = page_title.get_attribute('innerHTML')
-        expected_title = 'My Courses'
-        print(title_name)
-        if title_name == expected_title:
+        try:
+            self.wait.until(EC.title_is('My Courses'))
             print("Login Successful")
-        else:
+        except:
             print("Login Failed")
+            
+    def test_all_elements(self):
+        self.driver = setup_webdriver('chrome')
+        self.driver.maximize_window()
+        self.wait = WebDriverWait(self.driver, DEFAULT_TIMEOUT)
+        self.driver.get("https://www.letskodeit.com/")
         
-        
-TL = TestLogin()
-TL.test_valid_login()
+        lp = LoginPage(self.driver)
+        lp.verify_all_elements_present()
+            
+
+if __name__ == "__main__":
+    TL = TestLogin()
+    TL.test_valid_login()
+    TL.test_all_elements()
