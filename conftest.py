@@ -2,6 +2,8 @@ import os
 import pytest
 from datetime import datetime
 from selenium import webdriver
+from utilities.utils import logger
+from utilities.utils import start_test_capture, end_test_capture, get_logs_for_test
 
 
 def pytest_addoption(parser):
@@ -109,3 +111,28 @@ def pytest_html_report_title(report):
     datestamp = datetime.now().strftime("%A - %m%Y")
     timestamp = datetime.now().strftime("%H:%M:%S")
     report.title = f"Testing WildXR Website - on {datestamp} @ {timestamp}"
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    report = outcome.get_result()
+    
+    if report.when == call:
+        # Captures logs for the test.
+        logs = get_logs_for_test(item.name)
+        
+        # Adds logs to the report.
+        extra = getattr(report, 'extra', [])
+        extra.append(pytest.html.extras.text(logs, name="Log"))
+        report.extra = extra
+        
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_setup(item):
+    # Clear the log capture for this test
+    start_test_capture(item.name)
+    yield
+    
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_teardown(item):
+    end_test_capture(item.name)
+    yield
