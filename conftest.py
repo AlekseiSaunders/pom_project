@@ -19,10 +19,11 @@ def pytest_addoption(parser):
         help="Specify the browser: chrome, firefox, edge or all",
     )
     parser.addoption(
-        "--session", 
+        "--setup-type", 
         action="store",
         default="isolated",
-        help="Specify the session type: isolated or continuous")
+        help="Specify the session type: isolated or continuous"
+        )
     parser.addoption(
         "--headless",
         action="store_true",
@@ -60,7 +61,7 @@ def perform_setup(browser_name, headless, private):
         if headless:
             options.add_argument("--headless")
         if private:
-            options.add_argument("-private")
+            options.add_argument("--private")
         driver = webdriver.Firefox(options=options)
     elif browser_name == "edge":
         options = EdgeOptions()

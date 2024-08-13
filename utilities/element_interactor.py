@@ -90,6 +90,6 @@ class ElementInteractor:
             element = self.locator.get_element(self.driver, locator, locator_type)
             element.send_keys(data)
         except Exception as e:
-            logger.warning(f"Could send data into {locator}.")
+            logger.warning(f"Could not send data into {locator}.")
             logger.error(f"Error: {str(e)}")
             

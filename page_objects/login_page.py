@@ -135,6 +135,7 @@ class LoginPage:
         self.click_login_link()
         self.enter_username(user)
         self.enter_password(password)
+        time.sleep(5)
         self.click_login_button()
         
         

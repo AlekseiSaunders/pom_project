@@ -21,13 +21,13 @@ admin_pass = os.getenv("ADMIN_PASSWORD")
 fail_user = fake.email()
 fail_pass = fake.password()
 
-@pytest.mark.usefixtures("setup_isolated")
+
 class TestLogin:
     
     @pytest.mark.run(order=1)
     @pytest.mark.fails
-    def test_invalid_login(self, setup):
-        driver,wait = setup
+    def test_invalid_login(self, setup_isolated):
+        driver,wait = setup_isolated
         
         logger.info(f"Attempting to login from invalid test on {driver.name}")
         driver.get("https://www.letskodeit.com/")
@@ -40,8 +40,8 @@ class TestLogin:
         
     @pytest.mark.run(order=2)
     @pytest.mark.succeeds
-    def test_valid_login(self, setup):
-        driver, wait = setup
+    def test_valid_login(self, setup_isolated):
+        driver, wait = setup_isolated
         logger.info(f"Attempting to login from valid test on {driver.name}")
         driver.get("https://www.letskodeit.com/")
     
@@ -53,8 +53,8 @@ class TestLogin:
             
     @pytest.mark.run(order=3)
     @pytest.mark.succeeds
-    def test_all_elements(self, setup):
-        driver, wait = setup
+    def test_all_elements(self, setup_isolated):
+        driver, wait = setup_isolated
 
         logger.info(f"Verifying all elements are present on {driver.name}")
         driver.get("https://www.letskodeit.com/")
