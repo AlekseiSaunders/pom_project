@@ -1,4 +1,5 @@
 import os
+import time
 from .utils import logger
 from datetime import datetime
 from .config import SCREENSHOT_DIR
@@ -28,6 +29,7 @@ class ScreenshotManager:
         screenshot_destination = os.path.join(screenshot_dir, file_name)
 
         try:
+            time.sleep(1)
             driver.save_screenshot(screenshot_destination)
             logger.info(f"Screenshot saved to: {screenshot_destination}")
         except Exception as e:

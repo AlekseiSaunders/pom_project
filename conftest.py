@@ -11,6 +11,7 @@ from utilities.config import DEFAULT_TIMEOUT, EXTENDED_TIMEOUT
 from page_objects.login_page import LoginPage
 
 
+
 def pytest_addoption(parser):
     parser.addoption(
         "--browser",
@@ -137,33 +138,35 @@ def setup_continuous(request):
     # Perform teardown
     perform_teardown(driver)
     
-    # Perform teardown
-    perform_teardown(driver)
+
+# def perform_teardown(driver):
+#     logger.info("Performing teardown")
+#     if isinstance(driver, list):
+#         for d in driver:
+#             teardown_single_driver(d)
+#         else:
+#             teardown_single_driver(driver)
 
 def perform_teardown(driver):
-    logger.info("Performing teardown")
-    if isinstance(driver, list):
-        for d in driver:
-            teardown_single_driver(d)
-        else:
-            teardown_single_driver(driver)
-
-def teardown_single_driver(driver):
-    # Log out if logged in
     try:
-        login_page = LoginPage(driver)
-        if login_page.is_logged_in():
-            login_page.logout()
-    except Exception as e:
-        logger.error(f"Error during logout str({e})")
+        logger.info(f"Attempting teardown with perform_teardown")
+    # Close the browser
+        driver.quit()
+        
+    # Log out if logged in
+    # try:
+    #     login_page = LoginPage(driver)
+    #     if login_page.is_logged_in():
+    #         login_page.logout()
+    # except Exception as e:
+    #     logger.error(f"Error during logout str({e})")
     
     # Clear browsing data
     # driver.delete_all_cookies()
     # driver.execute_script("localStorage.clear();")
     # driver.exceute_script("sessionStorage.clear();")
-    
-    # Close the browser
-    driver.close()
+    except Exception as e:
+        logger.warning(f"Problem performing teardown steps: {str(e)}")
     
         
 def pytest_configure(config):
@@ -230,3 +233,4 @@ def pytest_runtest_setup(item):
 def pytest_runtest_teardown(item):
     end_test_capture(item.name)
     yield
+    

@@ -8,8 +8,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from utilities.element_locator import ElementLocator
 from utilities.element_interactor import ElementInteractor
-from utilities.config import DEFAULT_TIMEOUT
+from utilities.screenshot_manager import ScreenshotManager
+from utilities.config import DEFAULT_TIMEOUT, SCREENSHOT_DIR
 
+# Initialize ScreenshotManager
+
+shot = ScreenshotManager()
 
 load_dotenv()
 
@@ -30,6 +34,7 @@ class LoginPage:
         self.wait = WebDriverWait(self.driver, DEFAULT_TIMEOUT)
         self.locator = ElementLocator(driver)
         self.interact = ElementInteractor(driver)
+
         
     # Locators
     _login_link = "//div[contains(@class, 'navbar')]//a[@href='/login']"
@@ -118,9 +123,11 @@ class LoginPage:
     def verify_login_failed(self):
         try:
             self.wait.until(EC.presence_of_element_located((By.XPATH, self._incorrect_details)))
+            shot.take_screenshot(self.driver, "Invalid_Login_Creds")
             logger.info(f"Login was not successful, warning was found")
             return True
         except TimeoutException:
+            shot.take_screenshot(self.driver, "Invalid_Login_unexpected_error")
             logger.error("Login succeeded or warning was not found.")
             raise TimeoutException("Login succeeded or warning was not found.")
         
@@ -133,10 +140,11 @@ class LoginPage:
         """
         logger.info(f"Attempting login for user: {user}")
         self.click_login_link()
+        logger.info(f"Attemping to enter user name")
         self.enter_username(user)
+        logger.info(f"Attempting to enter password")
         self.enter_password(password)
-        time.sleep(5)
+        logger.info(f"attempting to click login_button")
         self.click_login_button()
         
         
-    

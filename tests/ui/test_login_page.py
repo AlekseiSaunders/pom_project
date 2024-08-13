@@ -10,9 +10,13 @@ from selenium.webdriver.support import expected_conditions as EC
 from page_objects.login_page import LoginPage
 from utilities.webdriver_setup import setup_webdriver
 from utilities.config import DEFAULT_TIMEOUT, EXTENDED_TIMEOUT
+from utilities.screenshot_manager import ScreenshotManager
 
 # Initialize Faker
 fake = Faker()
+
+# Initialize ScreenshotManager
+shot = ScreenshotManager()
 
 # Get env variables
 load_dotenv()
