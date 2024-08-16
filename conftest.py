@@ -187,19 +187,6 @@ def pytest_configure(config):
     
     report_path = os.path.join(reports_dir, report_name)
 
-    # Find the --html option in the config
-    # html_path = None
-    # for arg in config.option.htmlpath:
-    #     if arg.endswith('.html'):
-    #         html_path = arg
-    #         break
-
-    # if html_path:
-    #     # Replace original html path with our custom name
-    #     config.option.htmlpath = [
-    #         report_name if arg == html_path else arg for arg in config.option.htmlpath
-    #     ]
-
     if config.option.htmlpath:
         config.option.htmlpath = report_path
 

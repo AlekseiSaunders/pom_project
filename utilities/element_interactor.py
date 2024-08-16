@@ -1,4 +1,5 @@
 import os
+from .config import FILE_UPLOAD_DIR
 from .utils import logger
 from traceback import print_stack
 from typing import Optional, List
@@ -59,7 +60,7 @@ class ElementInteractor:
             file_input.send_keys(abs_file_path)
             logger.info(f"File uploaded: {abs_file_path}")
         except Exception as e:
-            logger.warning(f"Could upload {file_input} found at {file_path}")
+            logger.warning(f"Could not upload {file_input} found at {file_path}")
             logger.error(f"Error: {str(e)}")
 
     def element_click(self, locator, locator_type="XPATH"):
