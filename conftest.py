@@ -9,83 +9,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 from utilities.utils import logger, start_test_capture, end_test_capture, get_logs_for_test
 from utilities.config import DEFAULT_TIMEOUT, EXTENDED_TIMEOUT
 from page_objects.login_page import LoginPage
-
-
-
-def pytest_addoption(parser):
-    parser.addoption(
-        "--browser",
-        action="store",
-        default="chrome",
-        help="Specify the browser: chrome, firefox, edge or all",
-    )
-    parser.addoption(
-        "--setup-type", 
-        action="store",
-        default="isolated",
-        help="Specify the session type: isolated or continuous"
-        )
-    parser.addoption(
-        "--headless",
-        action="store_true",
-        help="Run tests in headless mode"
-    )
-    parser.addoption(
-        "--private",
-        action="store_true",
-        help="Run browser in private/incognito mode"
-        )
-
-@pytest.fixture(params=["chrome", "firefox", "edge"])
-def all_browsers(request):
-    return request.param
-
-
-@pytest.fixture(scope="class")
-def browser(request):
-    browser_option = request.config.getoption("--browser")
-    if browser_option == "all":
-        return ["chrome", "firefox", "edge"]
-    return [browser_option]
+from refactored_conftest import WebDriverFactory
 
 def perform_setup(browser_name, headless, private):
     logger.info(f"Setting up {browser_name} browser")
-    if browser_name == "chrome":
-        options = ChromeOptions()
-        if headless:
-            options.add_argument("--headless")
-        if private:
-            options.add_argument("--incognito")
-        driver = webdriver.Chrome(options=options)
-    elif browser_name == "firefox":
-        options = FirefoxOptions()
-        if headless:
-            options.add_argument("--headless")
-        if private:
-            options.add_argument("--private")
-        driver = webdriver.Firefox(options=options)
-    elif browser_name == "edge":
-        options = EdgeOptions()
-        if headless:
-            options.add_argument("--headless")
-        if private:
-            options.add_argument("--inprivate")
-        driver = webdriver.Edge(options=options)
-    else:
-        raise ValueError(f"Unsupported browser request: {browser_name}")
+    wdf = WebDriverFactory(browser_name, headless, private)
+    driver = wdf.get_webdriver_instance()
+    yield driver
     
-    driver.maximize_window()
-    wait = WebDriverWait(driver, DEFAULT_TIMEOUT)
-    
-    # Clear cookies and cache
-    # driver.delete_all_cookies()
-    # driver.execute_script("localStorage.clear();")
-    # driver.execute_script("sessionStorage.clear();")
-    
-    start_test_capture(driver.session_id)
-    
-    return driver, wait
-
 @pytest.fixture(scope="function")
 def setup(request):
     setup_type = request.config.getoption("--setup-type")

@@ -9,7 +9,6 @@ from selenium.webdriver.edge.options import Options as EdgeOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from utilities.utils import logger, start_test_capture, end_test_capture, get_logs_for_test
 from utilities.config import DEFAULT_TIMEOUT, EXTENDED_TIMEOUT
-from page_objects.login_page import LoginPage
 
 
 """
@@ -53,6 +52,12 @@ def pytest_addoption(parser):
 def all_browsers(request):
     return request.param
 
+@pytest.fixture(scope="class")
+def browser(request):
+    browser_option = request.config.getoption("--browser")
+    if browser_option == "all":
+        return ["chrome", "firefox", "edge"]
+    return [browser_option]
 
 class WebDriverFactory:
     
@@ -84,6 +89,13 @@ def get_webdriver_instance(self):
         if self.private:
             options.add_argument("--private")
         driver = webdriver.Firefox(options=options)
+    elif self.browser == "":
+        options = ChromeOptions()
+        if self.headless:
+            options.add_argument("--headless")
+        if self.private:
+            options.add_argument("--incognito")
+        driver = webdriver.Chrome(options=options)
     else:
         logger.error(f"Browser not recognized; {self.browser}")
     driver.maximize_window()
